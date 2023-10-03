@@ -1,0 +1,184 @@
+---
+title: "HW-ML"
+author: "Thunkarn V."
+date: "`r Sys.Date()`"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+# **Introduction**
+This report is part of DataRockie Bootcamp 8 in the Machine Learning Sprint. We studied and analyzed the house price dataset in India, and trying to find the best price prediction model from linear regression.
+
+## Library install and import data
+```{r message=FALSE}
+library(tidyverse)
+library(caret)
+library(readxl)
+
+my_data <- read_excel("House Price India.xlsx")
+```
+
+## Data cleaning
+### check missing values check
+```{r message=TRUE}
+my_data %>%
+  complete.cases() %>%
+  mean()
+```
+### drop row with missing values
+```{r}
+clean_data <- my_data %>%
+  drop_na()
+```
+### remove unnecessary data
+Since it doesn't make sense to consider id, Date, Latitude, Longitude, and postal code to predict house price, we remove them.
+```{r}
+use_data <- clean_data %>%
+  select(-`id`, -Date, -Lattitude, -Longitude, -`Postal Code`)
+```
+
+## 1. Run a regression with all variables, then select the top 5 most important variables to run in model 2.
+### 1-1 Split data
+```{r}
+tt_split1 <- function(data){
+  set.seed(42)
+  n <- nrow(data)
+  id1 <- sample(n, size=0.8*n)
+  train_data1 <- data [id1, ]
+  test_data1 <- data [-id1, ]
+  return(list(training=train_data1,
+         testing=test_data1))
+}
+
+prep_data1 <- tt_split1(use_data)
+train_df1 <- prep_data1[[1]]
+test_df1 <- prep_data1[[2]]
+```
+### 1-2 train model
+```{r}
+lm_model1 <- train(Price~.,
+                  data = train_df1,
+                  method = "lm")
+```
+### 1-3 score
+```{r}
+p1 <- predict(lm_model1, newdata = test_df1)
+```
+### 1-4 evaluate
+```{r}
+mae1 <- mean(abs(p1-use_data$Price))
+rmse1 <- sqrt(mean((p1-use_data$Price)**2))
+
+```
+### Find key variable
+```{r message=TRUE}
+varImp(lm_model1)
+```
+
+The varImp() result shows that 'water present', 'living area', 'number of bedrooms', 'built year', and 'number of views' are the top five most important variables that affect the house price.
+
+### select use data and add log price
+```{r}
+use_data_2 <- use_data %>%
+  select(Price,
+         "A" = `waterfront present`,
+         "B" = `living area`,
+         "C" = `number of bedrooms`,
+         "D" = `Built Year`,
+         "E" = `number of views`) %>%
+  mutate(logp = log(Price))
+```
+
+## 2. run regression to predict the house price in India (Price)
+### 2-1 split model
+```{r}
+tt_split2 <- function(data) {
+  set.seed(43)
+  n <- nrow(data)
+  id2 <- sample(n, size=0.8*n)
+  train_data2 <- data [id2, ]
+  test_data2 <- data [-id2, ] 
+}
+
+prep_data2 <- tt_split1(use_data_2)
+train_df2 <- prep_data2[[1]]
+test_df2 <- prep_data2[[2]]
+```
+### 2-2 train model
+```{r}
+lm_model2 <- train(Price~.,
+                  data = train_df2,
+                  method = "lm")
+```
+### 2-3 score
+```{r}
+p2 <- predict(lm_model2, newdata = test_df2)
+```
+### 2-4 evaluate
+```{r}
+mae2 <- mean(abs(p2-use_data_2$Price))
+rmse2 <- sqrt(mean((p2-use_data_2$Price)**2))
+```
+
+## 3. run regression to predict the house price in India (log(Price))
+### 3-1 split data can use from model 2
+
+### 3-2 Train model
+```{r}
+lm_model3 <- train(logp~.,
+                   data = train_df2,
+                   method = "lm")
+
+p_train_3 <- predict(lm_model3, newdata = train_df2)
+
+mae_train_model_3 <- mean(abs(exp(p_train_3)-exp(use_data_2$logp)))
+rmse_train_model_3 <- sqrt((mean(exp(p_train_3)-exp(use_data_2$logp))**2))
+```
+
+### 3-3 score
+```{r}
+p3 <- predict(lm_model3, newdata = test_df2)
+```
+
+### 3-4 evaluate
+```{r}
+mae3 <- mean(abs(exp(p3)-exp(use_data_2$logp)))
+rmse3 <- sqrt((mean(exp(p3)-exp(use_data_2$logp))**2))
+```
+
+## Summarize RMSE train vs test
+### Model 1 
+```{r}
+print(lm_model1$results$RMSE)
+print(rmse1)
+```
+
+### Model 2 
+```{r}
+print(lm_model2$results$RMSE)
+print(rmse2)
+```
+### Model 3 
+```{r}
+print(rmse_train_model_3)
+print(rmse3)
+```
+
+## Summarize MAE train vs test
+### Model 1 
+```{r}
+print(lm_model1$results$MAE)
+print(mae1)
+```
+
+### Model 2 
+```{r}
+print(lm_model2$results$MAE)
+print(mae2)
+```
+### Model 3 
+```{r}
+print(mae_train_model_3)
+print(mae3)
+```

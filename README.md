@@ -1,5 +1,5 @@
 # data-science-bootcamp-8
-My data portfolio for data analyst role
+My data portfolio for Data Analyst role
 
 ## What did i learn from this bootcamp?
 
@@ -8,7 +8,6 @@ I learn a lot from this bootcamp from last 4 months. This bootcamp has 10 sprint
 - Spreadsheet
 - Database (SQL)
 - R Programming
---T
 - Data Transformation
 - Data Visualization
 - Essential Statistics for Data Analyst

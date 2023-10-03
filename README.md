@@ -8,6 +8,7 @@ I learn a lot from this bootcamp from last 4 months. This bootcamp has 10 sprint
 - Spreadsheet
 - Database (SQL)
 - R Programming
+--T
 - Data Transformation
 - Data Visualization
 - Essential Statistics for Data Analyst

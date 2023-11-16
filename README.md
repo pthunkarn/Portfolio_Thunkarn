@@ -16,4 +16,4 @@ I learn a lot from this bootcamp from last 4 months. This bootcamp has 10 sprint
 - Essentioal Python for Data Analyst
 - Dashboard by using PowerBI and Tableu
 
-You can find me on https://www.linkedin.com/in/thunkarn-vilaiphorn-677386145/  
+You can find me on https://www.linkedin.com/in/pthunkarn/

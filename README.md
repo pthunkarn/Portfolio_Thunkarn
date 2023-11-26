@@ -1,10 +1,7 @@
-# data-science-bootcamp-8
+# My portfolio from DataRockie Bootcamp and  my personal project
 My data portfolio for Data Analyst role
 
-## What did i learn from this bootcamp?
-
-I learn a lot from this bootcamp from last 4 months. This bootcamp has 10 sprints from belows
-- Intro to data science
+I believe that my knowledge and skills, combined with my soft skills and experience, align well with your company's requirements
 - Spreadsheet
 - Database (SQL)
 - R Programming
